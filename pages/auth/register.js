@@ -2,9 +2,28 @@ import React from "react";
 
 // layout for page
 
+import axios from 'axios'
 import Auth from "layouts/Auth.js";
+import { useRouter } from 'next/router';
+
 
 export default function Register() {
+
+  const router = useRouter()
+
+  const onSubmit = async () => {
+
+      const email = document.getElementById('email').value,
+          password = document.getElementById('password').value;
+
+      const response = await axios.post('/api/login', { email, password });
+      if (response.status === 200) {
+          await router.push('/user/userNext');
+      } else {
+          console.log(response);
+      }
+  }
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">

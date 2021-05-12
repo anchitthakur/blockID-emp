@@ -1,4 +1,5 @@
 const withPlugins = require("next-compose-plugins");
+
 const withImages = require("next-images");
 const withSass = require("@zeit/next-sass");
 const withCSS = require("@zeit/next-css");
@@ -6,7 +7,7 @@ const withFonts = require("next-fonts");
 const webpack = require("webpack");
 const path = require("path");
 
-module.exports = withFonts(
+module.exports = withPlugins([withFonts(
   withCSS(
     withImages(
       withSass({
@@ -23,4 +24,19 @@ module.exports = withFonts(
       })
     )
   )
-);
+),
+{
+  async rewrites() {
+    return [
+      {
+        source: '/api/login',
+        destination: 'http://localhost:3000/api/login',
+      },
+      {
+        source: '/api/user',
+        destination: 'http://localhost:3000/api/user',
+      },
+    ]
+  }
+}
+]);
