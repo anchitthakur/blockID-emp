@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import OtpInput from 'react-otp-input';
 import Userlayout from "../layouts/Userlayout";
+import { useRouter } from 'next/router';
 
 export default function otp() {
 
     const [OTP, setOTP] = useState("")
+
+    function verify(val){
+        router.push('/loader');
+    }
+
     function updateOTP() {
         setOTP(text);
         if (text.length == 4) {
             console.log("OTP Entered: " + text)
-
-            verifyNow({ variables: { otpValue: text } })
-
+            verify(text);
         }
-
-
     }
-
 
     return (
         <>
