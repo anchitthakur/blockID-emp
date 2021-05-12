@@ -1,26 +1,48 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 
 import dynamic from 'next/dynamic'
 // if (typeof window != 'undefined') {
-    const QrScan = dynamic(() => import('react-qr-reader'),{ ssr: false })
-// }
+const QrScan = dynamic(() => import('react-qr-reader'), {ssr: false})
+//
 
 
 import Userlayout from "../../layouts/Userlayout";
+import {graphQLClient} from "../../utils/graphql-client";
+import {getAuthCookie} from "../../utils/auth-cookies";
+import {gql} from "graphql-request";
 
 
-export default function userNext() {
+export default function userNext({token}) {
 
-    const [qrscan, setQrscan] = useState('');
-    const handleScan = data => {
-        if (data) {
-            setQrscan(data)
+    const [adhaarData, setAdhaarData] = useState();
+
+    const handleScan = async id => {
+        console.log({id})
+        if (id) {
+            const query = gql`
+                query findAdhaar($id: ID!){
+                    findAdhaarInfoByID(id: $id) {
+                        address
+                        DOB
+                        owner{
+                            email
+                            #name
+                        }
+                    }
+                }
+            `
+            try {
+                const data = await graphQLClient(token).request(query, {id});
+                console.log(data);
+                setAdhaarData(data);
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
     const handleError = err => {
         console.error(err)
     }
-
 
 
     return (
@@ -29,27 +51,24 @@ export default function userNext() {
                 <div className="flex content-center items-center justify-center h-full">
                     <div className="w-full lg:w-4/12 px-4">
                         {/* <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0"> */}
-                            <div className="flex-auto px-10 lg:px-10 py-10 mx-auto">
-                                <QrScan
-                                    delay={300}
-                                    onError={handleError}
-                                    onScan={handleScan}
-                                    style={{ height: 200, width: 320 }}
-                                />
-                            </div>
-                        {/* </div> */}
-                        <div className="flex flex-wrap mt-6 relative py-20">
-                            <div className="w-full text-center text-gray-300 ">
-                                <div class="mb-3 pt-0">
-                                    <input type="text"  value = { qrscan } class="px-3 py-4 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-base border border-blueGray-300 outline-none focus:outline-none focus:shadow-outline w-full" />
-                                </div>
-                            </div>
+                        <div className="flex-auto px-10 lg:px-10 py-10 mx-auto">
+                            <QrScan
+                                delay={3000}
+                                onError={handleError}
+                                onScan={handleScan}
+                                style={{height: 200, width: 320}}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
         </>
     )
+}
+
+export async function getServerSideProps(ctx) {
+    const token = getAuthCookie(ctx.req);
+    return {props: {token: token || null}};
 }
 
 
