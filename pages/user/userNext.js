@@ -10,10 +10,11 @@ import Userlayout from "../../layouts/Userlayout";
 import {graphQLClient} from "../../utils/graphql-client";
 import {getAuthCookie} from "../../utils/auth-cookies";
 import {gql} from "graphql-request";
+import { useRouter } from 'next/router';
 
 
 export default function userNext({token}) {
-
+    const router = useRouter()
     const [adhaarData, setAdhaarData] = useState();
 
     const handleScan = async id => {
@@ -33,6 +34,10 @@ export default function userNext({token}) {
             `
             try {
                 const data = await graphQLClient(token).request(query, {id});
+                if(data!=null){
+                console.log(data,"dfdfdffdfdf");
+                router.push({ pathname: '/user/recieve', query: {data : JSON.stringify(data)} })
+                }
                 console.log(data);
                 setAdhaarData(data);
             } catch (e) {
@@ -53,7 +58,7 @@ export default function userNext({token}) {
                         {/* <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0"> */}
                         <div className="flex-auto px-10 lg:px-10 py-10 mx-auto">
                             <QrScan
-                                delay={3000}
+                                delay={5000}
                                 onError={handleError}
                                 onScan={handleScan}
                                 style={{height: 200, width: 320}}
