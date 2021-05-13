@@ -8,35 +8,35 @@ const webpack = require("webpack");
 const path = require("path");
 
 module.exports = withPlugins([withFonts(
-  withCSS(
-    withImages(
-      withSass({
-        webpack(config, options) {
-          config.module.rules.push({
-            test: /\.(eot|ttf|woff|woff2)$/,
-            use: {
-              loader: "url-loader",
-            },
-          });
-          config.resolve.modules.push(path.resolve("./"));
-          return config;
-        },
-      })
+    withCSS(
+        withImages(
+            withSass({
+              webpack(config, options) {
+                config.module.rules.push({
+                  test: /\.(eot|ttf|woff|woff2)$/,
+                  use: {
+                    loader: "url-loader",
+                  },
+                });
+                config.resolve.modules.push(path.resolve("./"));
+                return config;
+              },
+            })
+        )
     )
-  )
 ),
-{
-  async rewrites() {
-    return [
-      {
-        source: '/api/login',
-        destination: 'http://localhost:3000/api/login',
-      },
-      {
-        source: '/api/user',
-        destination: 'http://localhost:3000/api/user',
-      },
-    ]
+  {
+    async rewrites() {
+      return [
+        {
+          source: '/api/login',
+          destination: 'https://d1tcagz71y2olz.cloudfront.net/api/login',
+        },
+        {
+          source: '/api/user',
+          destination: 'https://d1tcagz71y2olz.cloudfront.net/api/user',
+        },
+      ]
+    }
   }
-}
 ]);

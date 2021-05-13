@@ -1,0 +1,9 @@
+name: blockID-employee
+region:
+nextApp:
+  component: "@sls-next/serverless-component@1.17.0"
+  inputs:
+    domain:
+      - ${env.SUB_DOMAIN}
+      - ${env.DOMAIN}
+    memory: 1024

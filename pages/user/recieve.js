@@ -27,4 +27,4 @@ export default function recieve() {
 }
 
 
-userNext.layout = Userlayout;
+recieve.layout = Userlayout;
